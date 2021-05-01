@@ -4,7 +4,7 @@ const PORT=8000;
 const router=require('./router')
 const db=require('./config/Mongoose')
 const cors=require('cors')
-// const passport=require('./Config/Passport')
+const passport=require('./config/Passport')
 
 const app=express()
 
