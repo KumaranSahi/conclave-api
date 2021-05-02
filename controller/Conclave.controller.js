@@ -1,5 +1,6 @@
 const conclavesdb=require('../models/Conclave.model')
 const usersdb=require('../models/User.model')
+const messagesdb=require('../models/Message.model')
 
 module.exports.getAllConclaves=async (req,res)=>{
     try{
@@ -67,4 +68,44 @@ module.exports.createConclave=async (req,res)=>{
             message:"Could not create conclave"
         })
     }
+}
+
+module.exports.getAllConclaveMessages=async (req,res)=>{
+    const {conclaveId}=req.params;
+    try{
+        const conclave=await conclavesdb.findById(conclaveId)
+        const newMessage=await conclave.execPopulate({path:'messages',populate:([{path:'by'},{path:"responseOf",populate:({path:'by'})}])})
+        return res.status(201).json({
+            ok:true,
+            data:[...newMessage.messages],
+            message:"Have some conclave messages"
+        })
+    }catch(error){
+        console.log(error);
+        return res.status(503).json({
+            ok:false,
+            message:"Could not create conclave"
+        })
+    }
+}
+
+module.exports.changeConclaveVisibility=async (req,res)=>{
+    const {conclaveId}=req.params;
+    const {visibility}=req.body
+    try{
+        await conclavesdb.findByIdAndUpdate(conclaveId,{visibility:visibility})
+        const conclave=await conclavesdb.findById(conclaveId)
+        return res.status(201).json({
+            ok:true,
+            data:conclave,
+            message:"Have some conclave messages"
+        })
+    }catch(error){
+        console.log(error);
+        return res.status(503).json({
+            ok:false,
+            message:"Could not update conclave"
+        })
+    }
+
 }

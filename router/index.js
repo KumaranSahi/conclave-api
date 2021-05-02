@@ -10,6 +10,7 @@ const conclaveController=require('../controller/Conclave.controller')
 //middlewares
 
 const userCheck=require('../middleware/UserCheck')
+const conclaveCheck=require('../middleware/ConclaveCheck')
 
 //user routes
 
@@ -22,5 +23,10 @@ router.post('/users/password',userController.changePassword)
 router.get('/conclaves',passport.authenticate('jwt',{session:false}),conclaveController.getAllConclaves)
 router.get('/conclaves/:id',passport.authenticate('jwt',{session:false}),userCheck,conclaveController.getUserConclave)
 router.post('/conclaves/:id',passport.authenticate('jwt',{session:false}),userCheck,conclaveController.createConclave)
+router.put('/conclaves/:conclaveId/visibility',passport.authenticate('jwt',{session:false}),conclaveCheck,conclaveController.changeConclaveVisibility)
+
+//messages routes
+
+router.get('/messages/:conclaveId',passport.authenticate('jwt',{session:false}),conclaveCheck,conclaveController.getAllConclaveMessages);
 
 module.exports=router

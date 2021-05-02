@@ -1,9 +1,9 @@
-const usersdb=require('../models/User.model');
+const conclavesdb=require('../models/Conclave.model');
 
-const userCheck=async (req,res,next)=>{
-    const {id}=req.params;
+const conclaveCheck=async (req,res,next)=>{
+    const {conclaveId}=req.params;
     try{
-        if(await usersdb.findById(id)){
+        if(await conclavesdb.findById(conclaveId)){
             next()
         }else{
             return res.status(404).json({
@@ -20,4 +20,4 @@ const userCheck=async (req,res,next)=>{
     }
 }
 
-module.exports=userCheck;
+module.exports=conclaveCheck;
