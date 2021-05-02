@@ -130,3 +130,21 @@ module.exports.addBookmark=async (req,res)=>{
         })
     }
 }
+
+module.exports.getBookmarked=async(req,res)=>{
+    const {id}=req.params;
+    try{
+        const userConclaves=await (await usersdb.findById(id)).execPopulate('bookmarkedConclaves')
+        return res.status(200).json({
+            ok:true,
+            data:[...userConclaves.bookmarkedConclaves],
+            message:"Have some conclaves"
+        })
+    }catch(error){
+        console.log(error);
+        return res.status(503).json({
+            ok:false,
+            message:"Could not load conclaves"
+        })
+    }
+}

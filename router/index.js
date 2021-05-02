@@ -22,6 +22,7 @@ router.post('/users/password',userController.changePassword)
 
 router.get('/conclaves',passport.authenticate('jwt',{session:false}),conclaveController.getAllConclaves)
 router.get('/conclaves/:id',passport.authenticate('jwt',{session:false}),userCheck,conclaveController.getUserConclave)
+router.get('/conclaves/:id/bookmarks',passport.authenticate('jwt',{session:false}),userCheck,conclaveController.getBookmarked)
 router.post('/conclaves/:id',passport.authenticate('jwt',{session:false}),userCheck,conclaveController.createConclave)
 router.put('/conclaves/:conclaveId/visibility',passport.authenticate('jwt',{session:false}),conclaveCheck,conclaveController.changeConclaveVisibility)
 router.put('/conclaves/:conclaveId/users/:id',passport.authenticate('jwt',{session:false}),conclaveCheck,userCheck,conclaveController.addBookmark)
