@@ -98,7 +98,7 @@ module.exports.changeConclaveVisibility=async (req,res)=>{
         return res.status(201).json({
             ok:true,
             data:conclave,
-            message:"Have some conclave messages"
+            message:"Have some conclaves"
         })
     }catch(error){
         console.log(error);
@@ -108,4 +108,25 @@ module.exports.changeConclaveVisibility=async (req,res)=>{
         })
     }
 
+}
+
+module.exports.addBookmark=async (req,res)=>{
+    const {conclaveId,id}=req.params;
+    try{
+        const user=await usersdb.findById(id);
+        if(!user.bookmarkedConclaves.some(conId=>conId==conclaveId)){
+            await user.bookmarkedConclaves.push(conclaveId)
+            await user.save()
+        }
+        return res.status(201).json({
+            ok:true,
+            message:"bookmark added"
+        })
+    }catch(error){
+        console.log(error);
+        return res.status(503).json({
+            ok:false,
+            message:"Could not add bookmark"
+        })
+    }
 }
