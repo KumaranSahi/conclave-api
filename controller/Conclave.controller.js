@@ -1,6 +1,6 @@
 const conclavesdb=require('../models/Conclave.model')
 const usersdb=require('../models/User.model')
-const messagesdb=require('../models/Message.model')
+const messagesdb=require('../models/Message.model');
 
 module.exports.getAllConclaves=async (req,res)=>{
     try{
@@ -44,21 +44,35 @@ module.exports.getUserConclave=async (req,res)=>{
 
 module.exports.createConclave=async (req,res)=>{
     const {id}=req.params;
-    const {name,description}=req.body;
+    const {name,description,image}=req.body;
     try{
-        const conclave=await conclavesdb.create({
-            name:name,
-            description:description,
-            admin:id,
-            visibility:"PRIVATE",
-            active:true
-        })
+        let conclave
+        if(image){
+            conclave=await conclavesdb.create({
+                name:name,
+                description:description,
+                admin:id,
+                image:image,
+                visibility:"PRIVATE",
+                active:true
+            })
+        }else{
+            conclave=await conclavesdb.create({
+                name:name,
+                description:description,
+                admin:id,
+                image:null,
+                visibility:"PRIVATE",
+                active:true
+            })
+        }
         const user=await usersdb.findById(id);
         user.createdConclaves.push(conclave.id);
         await user.save();
         return res.status(201).json({
             ok:true,
             data:conclave,
+            currentConclave:conclave,
             message:"Conclave created successfully"
         })
     }catch(error){

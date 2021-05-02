@@ -2,7 +2,7 @@ const usersdb=require('../models/User.model');
 const jwt=require('jsonwebtoken');
 
 module.exports.signupUser=async (req,res)=>{
-    const {name,email,password}=req.body;
+    const {name,email,password,image}=req.body;
     let data=null;
     try{
     if(await usersdb.findOne({email:email})){
@@ -12,11 +12,21 @@ module.exports.signupUser=async (req,res)=>{
         })
     }
     if(name && (email && new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$").test(email)) && password){
-        data=await usersdb.create({
-            name:name,
-            email:email,
-            password:password
-        })
+        if(image){
+            data=await usersdb.create({
+                name:name,
+                email:email,
+                password:password,
+                image:image
+            })
+        }else{
+            data=await usersdb.create({
+                name:name,
+                email:email,
+                password:password,
+                image:null
+            })
+        }
     }
     else{
         return res.status(400).json({
@@ -78,7 +88,8 @@ module.exports.signinUser=async (req,res)=>{
                 ok:true,
                 token: jwt.sign(user.toJSON(),process.env["SECRET"], {expiresIn:  '60m'}),
                 userId:user.id,
-                userName:user.name
+                userName:user.name,
+                image:user.image
             }
         })
     }catch(error){
